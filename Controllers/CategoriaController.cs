@@ -36,5 +36,58 @@ namespace CasaDosLivros.Controllers
             }
 
         }
+
+        [HttpPut]
+        [Route("edit/{id:int}")]
+        public async Task<ActionResult<Categoria>> Post([FromServices] DataContext context, [FromBody] Categoria model, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                //Recuperando Categoria do DB
+                var categoria = await context.Categorias.FirstOrDefaultAsync(x => x.Id == id);
+
+                //verificando se é null
+                if (categoria == null)
+                    return BadRequest(ModelState);
+
+                categoria.Name = model.Name;
+
+                //fazendo update
+                context.Categorias.Update(categoria);
+                await context.SaveChangesAsync();
+                return model;
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
+        }
+
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+        public async Task<ActionResult<string>> Delete([FromServices] DataContext context, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                //Recuperando livro existente
+                Categoria categoria = await context.Categorias.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (categoria == null)
+                    return BadRequest(ModelState);
+
+
+                //Deletando Livro
+                context.Categorias.Remove(categoria);
+
+                await context.SaveChangesAsync();
+                return $"Livro {categoria} deletado";
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
+        }
     }
 }

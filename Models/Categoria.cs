@@ -12,5 +12,11 @@ namespace CasaDosLivros.Models
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"Categoria: {Name}";
+        }
     }
 }
