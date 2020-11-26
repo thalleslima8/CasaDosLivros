@@ -59,5 +59,62 @@ namespace CasaDosLivros.Controllers
             }
             
         }
+
+        [HttpPut]
+        [Route("edit/{id:int}")]
+        public async Task<ActionResult<Livro>> Put([FromServices] DataContext context, [FromBody] Livro model, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                //Recuperando livro existente
+                Livro livro = await context.Livros.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (livro == null)
+                    return BadRequest(ModelState);
+
+                livro.Title = model.Title;
+                livro.Author = model.Author;
+                livro.Price = model.Price;
+                livro.CategoriaId = model.CategoriaId;
+
+                context.Livros.Update(livro);
+
+                await context.SaveChangesAsync();
+                return model;
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
+        }
+
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+        public async Task<ActionResult<string>> Delete([FromServices] DataContext context, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                //Recuperando livro existente
+                Livro livro = await context.Livros.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (livro == null)
+                    return BadRequest(ModelState);
+
+                
+                //Deletando Livro
+                context.Livros.Remove(livro);
+
+                await context.SaveChangesAsync();
+                return $"Livro {livro} deletado";
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
+        }
+
+
     }
 }

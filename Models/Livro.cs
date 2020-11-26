@@ -34,7 +34,7 @@ namespace CasaDosLivros.Models
 
         public override string ToString()
         {
-            return $"{Title} - {Author}";
+            return $"Titulo: {Title} - Autor: {Author}";
         }
     }
 }
