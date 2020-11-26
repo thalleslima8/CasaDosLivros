@@ -13,12 +13,12 @@ namespace CasaDosLivros.Models
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Esse Campo é Obrigatório")]
         public string Author { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Esse Campo é Obrigatório")]
         [Range(1, int.MaxValue, ErrorMessage = "Preco Inválido")]
         public decimal Price { get; set; }
-        public int CategoryId { get; set; }
+        public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
 
         public string Details()

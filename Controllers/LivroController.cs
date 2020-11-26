@@ -10,23 +10,46 @@ using CasaDosLivros.Data;
 namespace CasaDosLivros.Controllers
 {
     [ApiController]
-    [Route("v1/categorias")]
+    [Route("v1/livros")]
     public class LivroController : Controller
     {   
+        [HttpGet]
         [Route("")]
-        public async Task<ActionResult<List<Categoria>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Livro>>> Get([FromServices] DataContext context)
         {
-            var categorias = await context.Categorias.ToListAsync();
-            return categorias;
+            var livros = await context.Livros.Include(x => x.Categoria).ToListAsync();
+            return livros;
+        }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Livro>> GetById([FromServices] DataContext context, int id)
+        {
+            var livro = await context.Livros.Include(x => x.Categoria).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return livro;
+        }
+
+        [HttpGet]
+        [Route("categorias/{id:int}")]
+        public async Task<ActionResult<List<Livro>>> GetByCategoria([FromServices] DataContext context, int id)
+        {
+            var livros = await context.Livros
+                                .Include(x => x.Categoria)
+                                .AsNoTracking()
+                                .Where(x => x.CategoriaId == id)
+                                .ToListAsync();
+            return livros;
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<Categoria>> Post([FromServices] DataContext context, [FromBody] Categoria model)
+        public async Task<ActionResult<Livro>> Post([FromServices] DataContext context, [FromBody] Livro model)
         {
             if (ModelState.IsValid)
             {
-                context.Categorias.Add(model);
+                //Salvando Livro
+                context.Livros.Add(model);
+
                 await context.SaveChangesAsync();
                 return model;
             }
